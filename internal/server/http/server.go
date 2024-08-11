@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	jwt_pkg "github.com/dbo-test/pkg/jwt"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 )
@@ -17,6 +18,8 @@ import (
 type Handler struct {
 	Index    indexHandlerInterface
 	Customer customerHandlerItf
+	Order    orderHandlerItf
+	Login    loginHandlerItf
 }
 
 type indexHandlerInterface interface {
@@ -31,9 +34,23 @@ type customerHandlerItf interface {
 	HandlerSearchCustomer(g *gin.Context)
 }
 
+type orderHandlerItf interface {
+	HandlerGetOrderDetail(g *gin.Context)
+	HandlerCreateOrder(g *gin.Context)
+	HandlerDeleteOrder(g *gin.Context)
+	HandlerUpdateOrder(g *gin.Context)
+	HandlerSearchOrder(g *gin.Context)
+}
+
+type loginHandlerItf interface {
+	HandleLogin(c *gin.Context)
+	HandleLoginInfo(g *gin.Context)
+}
+
 type jwtMiddleware interface {
 	GetJWTSecret() []byte
 	ParseClientToken(tokenStr string) (*jwt.Token, error)
+	GenerateJWTToken(param jwt_pkg.JWTTokenParameter) (string, error)
 }
 
 type Server struct {

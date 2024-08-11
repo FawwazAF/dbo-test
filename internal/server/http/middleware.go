@@ -2,6 +2,7 @@ package http
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -11,30 +12,35 @@ import (
 // Middleware function to check JWT token and authorize user.
 func (s *Server) authMiddleware() gin.HandlerFunc {
 	return gin.HandlerFunc(func(c *gin.Context) {
-		r := c.Request
-		w := c.Writer
-		tokenString := r.Header.Get("Authorization")
-		if tokenString == "" {
-			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		tokenString := c.GetHeader("Authorization")
+		if tokenString == "" || !strings.HasPrefix(tokenString, "Bearer ") {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header required"})
+			c.Abort()
 			return
 		}
 
+		tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 		token, err := s.jwt.ParseClientToken(tokenString)
 		if err != nil || !token.Valid {
-			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+			c.Abort()
 			return
 		}
 
-		claims, _ := token.Claims.(jwt.MapClaims)
-		exp, _ := claims["exp"].(time.Time)
-
-		if hasTokenExpired(exp) {
-			http.Error(w, "Unauthorized", http.StatusUnauthorized)
-			return
+		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+			if exp, ok := claims["exp"].(float64); ok {
+				if time.Unix(int64(exp), 0).Before(time.Now()) {
+					c.JSON(http.StatusUnauthorized, gin.H{"error": "Token expired"})
+					c.Abort()
+					return
+				}
+			}
+			c.Set("customer_id", claims["id"])
+			c.Set("username", claims["username"])
+			c.Next()
+		} else {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+			c.Abort()
 		}
 	})
-}
-
-func hasTokenExpired(exp time.Time) bool {
-	return time.Now().After(exp)
 }

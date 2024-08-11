@@ -48,7 +48,8 @@ func (repo *pgsqlRepository) GetCustomerByID(ctx context.Context, id int) (*mode
 func (repo *pgsqlRepository) GetCustomerByUsername(ctx context.Context, username string) (*model.Customer, error) {
 	query := `
 		SELECT 
-			id
+			id,
+			password
 		FROM
 			dbo_trx_customer
 		WHERE
@@ -197,7 +198,7 @@ func (repo *pgsqlRepository) buildSearchCustomerQuery(parameters map[string]inte
 	whereClause := []string{}
 	if nameValue := parameters["name"]; nameValue != nil {
 		whereClause = append(whereClause, `"name" LIKE (?) `)
-		args = append(args, fmt.Sprintf("%v", nameValue)+"%")
+		args = append(args, "%"+fmt.Sprintf("%v", nameValue)+"%")
 	}
 
 	if phoneNumber := parameters["phone_number"]; phoneNumber != nil {
@@ -210,9 +211,8 @@ func (repo *pgsqlRepository) buildSearchCustomerQuery(parameters map[string]inte
 		builder.WriteString(strings.Join(whereClause, "AND "))
 	}
 
-	if page := parameters["order_by"]; page != nil {
-		builder.WriteString(`ORDER BY ? `)
-		args = append(args, page)
+	if orderBy := parameters["order_by"]; orderBy != nil {
+		builder.WriteString(fmt.Sprintf("ORDER BY id %s ", orderBy))
 	}
 
 	if perPage := parameters["per_page"]; perPage != nil {

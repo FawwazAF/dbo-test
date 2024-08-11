@@ -8,7 +8,7 @@ type Customer struct {
 	ID             int    `json:"id" db:"id"`
 	Username       string `json:"username" db:"username"`
 	password       string `json:"-" db:"-"`
-	hashedPassword []byte `db:"password"`
+	HashedPassword []byte `db:"password"`
 
 	Name        string    `json:"name" db:"name"`
 	Email       string    `json:"email" db:"email"`
@@ -25,9 +25,9 @@ func (u *Customer) GetPassword() string {
 }
 
 func (u *Customer) SetHashedPassword(hashedPassword string) {
-	u.hashedPassword = []byte(hashedPassword)
+	u.HashedPassword = []byte(hashedPassword)
 }
 
 func (u *Customer) GetHashedPassword() []byte {
-	return u.hashedPassword
+	return u.HashedPassword
 }
