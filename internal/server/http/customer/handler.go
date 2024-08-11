@@ -12,6 +12,7 @@ type customerControllerItf interface {
 	AddCustomer(ctx context.Context, req *model.Customer) error
 	UpdateCustomer(ctx context.Context, req *model.Customer) error
 	DeleteCustomer(ctx context.Context, id int) error
+	SearchCustomer(ctx context.Context, query map[string]interface{}) ([]model.Customer, bool, error)
 }
 
 type responseWriter interface {
@@ -25,4 +26,9 @@ type handler struct {
 
 func NewHandler(customer customerControllerItf, writer responseWriter) *handler {
 	return &handler{customer: customer, responseWriter: writer}
+}
+
+type searchCustomerResponse struct {
+	CustomerData []model.Customer       `json:"customer_data,omitempty"`
+	Metadata     map[string]interface{} `json:"metadata,omitempty"`
 }

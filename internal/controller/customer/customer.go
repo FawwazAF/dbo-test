@@ -44,3 +44,41 @@ func (cc *customerController) UpdateCustomer(ctx context.Context, req *model.Cus
 func (cc *customerController) DeleteCustomer(ctx context.Context, id int) error {
 	return cc.customer.DeleteCustomer(ctx, id)
 }
+
+func (cc *customerController) SearchCustomer(ctx context.Context, query map[string]interface{}) ([]model.Customer, bool, error) {
+	// adjust pagination
+	var (
+		page    int
+		perPage int
+	)
+	pageRaw := query["page"]
+	page, valid := pageRaw.(int)
+	if !valid {
+		return nil, false, errors.New("invalid per_page data type")
+	}
+
+	perPageRaw := query["per_page"]
+	perPage, valid = perPageRaw.(int)
+	if !valid {
+		return nil, false, errors.New("invalid per_page data type")
+	}
+
+	page = (page - 1) * perPage
+	perPage++
+	query["per_page"] = perPage
+	query["page"] = page
+
+	customers, err := cc.customer.SearchCustomer(ctx, query)
+	if err != nil {
+		return nil, false, err
+	}
+
+	// check for next page pagination
+	hasNext := false
+	if len(customers) >= perPage {
+		hasNext = true
+		customers = customers[:len(customers)-1]
+	}
+
+	return customers, hasNext, nil
+}

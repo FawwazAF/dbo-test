@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"strings"
 	"time"
 
@@ -158,4 +159,71 @@ func (repo *pgsqlRepository) DeleteCustomer(ctx context.Context, id int) error {
 	}
 
 	return nil
+}
+
+func (repo *pgsqlRepository) SearchCustomer(ctx context.Context, parameters map[string]interface{}) ([]model.Customer, error) {
+	query, args := repo.buildSearchCustomerQuery(parameters)
+	ctx, cancel := context.WithTimeout(ctx, time.Duration(5*time.Second))
+	defer cancel()
+
+	customers := []model.Customer{}
+	if err := repo.pgsql.SelectContext(ctx, &customers, query, args...); err != nil {
+		return nil, err
+	}
+
+	return customers, nil
+}
+
+func (repo *pgsqlRepository) buildSearchCustomerQuery(parameters map[string]interface{}) (string, []interface{}) {
+	query := `
+		SELECT 
+			id,
+			username,
+			name,
+			email,
+			phone_number,
+			date_of_birth,
+			address,
+			status,
+			created_at,
+			updated_at
+		FROM
+			dbo_trx_customer 
+	`
+	builder := strings.Builder{}
+	args := []interface{}{}
+	builder.WriteString(query)
+
+	whereClause := []string{}
+	if nameValue := parameters["name"]; nameValue != nil {
+		whereClause = append(whereClause, `"name" LIKE (?) `)
+		args = append(args, fmt.Sprintf("%v", nameValue)+"%")
+	}
+
+	if phoneNumber := parameters["phone_number"]; phoneNumber != nil {
+		whereClause = append(whereClause, "phone_number LIKE (?) ")
+		args = append(args, fmt.Sprintf("%v", phoneNumber)+"%")
+	}
+
+	if len(whereClause) > 0 {
+		builder.WriteString(`WHERE `)
+		builder.WriteString(strings.Join(whereClause, "AND "))
+	}
+
+	if page := parameters["order_by"]; page != nil {
+		builder.WriteString(`ORDER BY ? `)
+		args = append(args, page)
+	}
+
+	if perPage := parameters["per_page"]; perPage != nil {
+		builder.WriteString(`LIMIT ? `)
+		args = append(args, perPage)
+	}
+
+	if page := parameters["page"]; page != nil {
+		builder.WriteString(`OFFSET ? `)
+		args = append(args, page)
+	}
+
+	return sqlx.Rebind(sqlx.DOLLAR, builder.String()), args
 }

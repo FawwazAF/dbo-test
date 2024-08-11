@@ -28,6 +28,7 @@ type customerHandlerItf interface {
 	HandlerAddCustomer(g *gin.Context)
 	HandlerUpdateCustomer(g *gin.Context)
 	HandlerDeleteCustomer(g *gin.Context)
+	HandlerSearchCustomer(g *gin.Context)
 }
 
 type jwtMiddleware interface {

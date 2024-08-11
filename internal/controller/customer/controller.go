@@ -12,6 +12,7 @@ type customerRepository interface {
 	AddCustomer(ctx context.Context, req *model.Customer) error
 	UpdateCustomer(ctx context.Context, req *model.Customer) error
 	DeleteCustomer(ctx context.Context, id int) error
+	SearchCustomer(ctx context.Context, query map[string]interface{}) ([]model.Customer, error)
 }
 
 type customerController struct {
