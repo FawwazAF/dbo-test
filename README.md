@@ -11,8 +11,6 @@
 3. [Data Definition Language (DDL)](#data-definition-language-ddl)
 4. [Setup Instructions](#setup-instructions)
 5. [API Documentation](#api-documentation)
-6. [Contributing](#contributing)
-7. [License](#license)
 
 ## Introduction
 Welcome to **dbo-test project**! This project is a demonstration of API for customer and order management features. It's built with Golang with Gin-Gonic Frameworks, PostgreSQL, and Docker.
