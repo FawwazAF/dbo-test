@@ -9,7 +9,7 @@ func (s *Server) registerHandler() {
 	s.router.GET("/v1/customer/:id", s.handler.Customer.HandlerGetCustomerByID)
 	s.router.POST("/v1/customer", s.handler.Customer.HandlerAddCustomer)
 	s.router.PUT("/v1/customer", s.handler.Customer.HandlerUpdateCustomer)
-	s.router.DELETE("/v1/customer/:id", s.handler.Customer.HandlerDeleteCustomer)
+	s.router.DELETE("/v1/customer/:id", authWrapper(SuperAdminAccess), s.handler.Customer.HandlerDeleteCustomer)
 	s.router.GET("/v1/customer", s.handler.Customer.HandlerSearchCustomer)
 
 	s.router.GET("/v1/order/:order_id", authWrapper(), s.handler.Order.HandlerGetOrderDetail)
