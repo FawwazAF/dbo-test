@@ -20,6 +20,7 @@ type Handler struct {
 	Customer customerHandlerItf
 	Order    orderHandlerItf
 	Login    loginHandlerItf
+	Product  productHandlerItf
 }
 
 type indexHandlerInterface interface {
@@ -43,8 +44,12 @@ type orderHandlerItf interface {
 }
 
 type loginHandlerItf interface {
-	HandleLogin(c *gin.Context)
-	HandleLoginInfo(g *gin.Context)
+	HandlerLogin(c *gin.Context)
+	HandlerLoginInfo(g *gin.Context)
+}
+
+type productHandlerItf interface {
+	HandlerGetAllProduct(c *gin.Context)
 }
 
 type jwtMiddleware interface {

@@ -2,9 +2,13 @@ package app
 
 import (
 	// controller
+	"fmt"
+	"os"
+
 	customer_ctrl "github.com/dbo-test/internal/controller/customer"
 	login_ctrl "github.com/dbo-test/internal/controller/login"
 	order_ctrl "github.com/dbo-test/internal/controller/order"
+	product_ctrl "github.com/dbo-test/internal/controller/product"
 
 	// repository
 	"github.com/dbo-test/internal/repository/pgsql"
@@ -14,6 +18,7 @@ import (
 	"github.com/dbo-test/internal/server/http/index"
 	login_handler "github.com/dbo-test/internal/server/http/login"
 	order_handler "github.com/dbo-test/internal/server/http/order"
+	product_handler "github.com/dbo-test/internal/server/http/product"
 
 	"github.com/dbo-test/internal/server/http"
 	"github.com/dbo-test/pkg/database/db_pgsql"
@@ -29,7 +34,14 @@ type Application struct {
 
 func NewApplication() (*Application, error) {
 	// connect to db
-	dbPGSQL := db_pgsql.NewDBSql("postgres", "user=admin password=admin1234 dbname=postgres host=localhost port=5432 sslmode=disable")
+	dbHost := os.Getenv("DB_HOST")
+	dbPort := os.Getenv("DB_PORT")
+	dbUser := os.Getenv("DB_USER")
+	dbPassword := os.Getenv("DB_PASSWORD")
+	dbName := os.Getenv("DB_NAME")
+
+	dbPGSQL := db_pgsql.NewDBSql("postgres", fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+		dbHost, dbPort, dbUser, dbPassword, dbName))
 	pgsqlConn, err := dbPGSQL.ConnectSQLX()
 	if err != nil {
 		return nil, err
@@ -45,6 +57,7 @@ func NewApplication() (*Application, error) {
 	customerCtrl := customer_ctrl.NewCustomer(pgsqlRepo)
 	orderCtrl := order_ctrl.NewOrder(pgsqlRepo)
 	loginCtrl := login_ctrl.NewLogin(pgsqlRepo, jwt)
+	productCtrl := product_ctrl.NewProduct(pgsqlRepo)
 
 	// ===================================================== HANDLER ========================================================
 	writer := http.NewHTTPWriter()
@@ -53,6 +66,7 @@ func NewApplication() (*Application, error) {
 		Customer: customer_handler.NewHandler(customerCtrl, writer),
 		Order:    order_handler.NewHandler(orderCtrl, writer),
 		Login:    login_handler.NewHandler(loginCtrl, writer),
+		Product:  product_handler.NewHandler(productCtrl, writer),
 	}
 
 	app.HTTPServers = http.NewServer(handler, jwt)

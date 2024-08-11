@@ -25,7 +25,7 @@ func (cc *customerController) AddCustomer(ctx context.Context, req *model.Custom
 	}
 
 	// encrypt password
-	hashedPassword, err := hash.HashPassword(req.GetPassword())
+	hashedPassword, err := hash.HashPassword(req.Password)
 	if err != nil {
 		return err
 	}

@@ -7,7 +7,7 @@ import (
 type Customer struct {
 	ID             int    `json:"id" db:"id"`
 	Username       string `json:"username" db:"username"`
-	password       string `json:"-" db:"-"`
+	Password       string `json:"password" db:"-"`
 	HashedPassword []byte `db:"password"`
 
 	Name        string    `json:"name" db:"name"`
@@ -18,10 +18,6 @@ type Customer struct {
 	Status      int       `json:"status" db:"status"`
 	CreatedAt   time.Time `json:"created_at" db:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at" db:"updated_at"`
-}
-
-func (u *Customer) GetPassword() string {
-	return u.password
 }
 
 func (u *Customer) SetHashedPassword(hashedPassword string) {

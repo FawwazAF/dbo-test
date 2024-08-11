@@ -56,3 +56,25 @@ func (repo *pgsqlRepository) UpdateProductStock(ctx context.Context, tx SqlTx, p
 
 	return nil
 }
+
+func (repo *pgsqlRepository) GetAllProduct(ctx context.Context) ([]model.Product, error) {
+	query := `
+		SELECT
+			id,
+			name,
+			price,
+			stock,
+			status,
+			created_at
+		FROM dbo_mst_product ORDER BY id desc
+	`
+
+	ctx, cancel := context.WithTimeout(ctx, time.Duration(5*time.Second))
+	defer cancel()
+	products := []model.Product{}
+	if err := repo.pgsql.SelectContext(ctx, &products, query); err != nil {
+		return nil, err
+	}
+
+	return products, nil
+}

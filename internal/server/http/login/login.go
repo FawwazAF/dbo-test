@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *Handler) HandleLogin(g *gin.Context) {
+func (h *Handler) HandlerLogin(g *gin.Context) {
 	var (
 		req LoginRequest
 		ctx = g.Request.Context()
@@ -29,7 +29,7 @@ func (h *Handler) HandleLogin(g *gin.Context) {
 	}, nil, http.StatusOK)
 }
 
-func (h *Handler) HandleLoginInfo(g *gin.Context) {
+func (h *Handler) HandlerLoginInfo(g *gin.Context) {
 	idRaw, exist := g.Get("customer_id")
 	if !exist {
 		h.responseWriter.GinHTTPResponseWriter(g, nil, errors.New("you are not logged in"), http.StatusUnauthorized)

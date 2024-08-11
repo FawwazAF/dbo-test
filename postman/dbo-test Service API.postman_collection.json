@@ -1,0 +1,439 @@
+{
+	"info": {
+		"_postman_id": "59152c8a-87f2-4d15-bf2f-a1427aec3820",
+		"name": "dbo-test Service API",
+		"description": "API Compilation of dbo-test service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25449466",
+		"_collection_link": "https://warped-comet-16981.postman.co/workspace/636fd91d-a111-49f6-8bc4-d2ba62170a1b/collection/25449466-59152c8a-87f2-4d15-bf2f-a1427aec3820?action=share&source=collection_link&creator=25449466"
+	},
+	"item": [
+		{
+			"name": "Customer API",
+			"item": [
+				{
+					"name": "Search Customer",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/customer?page=1&per_page=2&order_by=desc",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"customer"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "admin",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "per_page",
+									"value": "2"
+								},
+								{
+									"key": "order_by",
+									"value": "desc"
+								},
+								{
+									"key": "phone_number",
+									"value": "0811",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Search customer based on given query parameters.\n\nAccept Query Parameters :\n\n1. name - string\n    \n2. page - int\n    \n3. per_page - int\n    \n4. order_by -string\n    \n5. phone_number - string\n    \n\nWill return metadata response to see what filters applied to the search."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Customer By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/customer/2",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"customer",
+								"2"
+							]
+						},
+						"description": "Get single customer detail by given id\n\nAccept path parameter :\n\n1. id - int"
+					},
+					"response": []
+				},
+				{
+					"name": "Add Customer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin1\",\n    \"password\": \"admin1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/customer",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"customer"
+							]
+						},
+						"description": "Create a new customer by given body request"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Customer",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\" : 2,\n    \"name\": \"superadmin\",\n    \"email\": \"superadmin@gmail.com\",\n    \"phone_number\": \"081111111111\",\n    \"address\": \"somewhere in this world\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/customer",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"customer"
+							]
+						},
+						"description": "Edit existing customer by given body request"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Customer",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{Authorization}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\" : 2,\n    \"name\": \"superadmin\",\n    \"email\": \"superadmin@gmail.com\",\n    \"phone_number\": \"081111111111\",\n    \"address\": \"somewhere in this world\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/customer/3",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"customer",
+								"3"
+							]
+						},
+						"description": "Hard Deleting Customer\n\nNeed super admin authorization to use it\n\nSuper admin authorization given to customer with username : \"superadmin\""
+					},
+					"response": []
+				}
+			],
+			"description": "API that handles Customer Related Features. List API :\n\n1. Search Customer\n    \n2. Get Customer By ID\n    \n3. Add Customer\n    \n4. Update Customer\n    \n5. Delete Customer"
+		},
+		{
+			"name": "Order API",
+			"item": [
+				{
+					"name": "Create Order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{Authorization}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"order_list\": [\n        {\n            \"product_id\": 5,\n            \"quantity\": 10\n        },\n        {\n            \"product_id\": 10,\n            \"quantity\": 10\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/order",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"order"
+							]
+						},
+						"description": "Create a new order. Accept list of product_id and quantity. Will automatically reduces product stock.\n\n1. product_id - int\n    \n2. quantity - int"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Order",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{Authorization}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"order_id\": 17,\n    \"order_list\": [\n        {\n            \"product_id\": 1,\n            \"quantity\": 5\n        },\n        {\n            \"product_id\": 2,\n            \"quantity\": 5\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/order",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"order"
+							]
+						},
+						"description": "Update existing order. Accepting body request order_id and order_list. If new order detail have less quantity than old order detail, will update product stock."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order Detail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{Authorization}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/v1/order/:id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"order",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "17"
+								}
+							]
+						},
+						"description": "Get single order detail by given its id. accept id as int."
+					},
+					"response": []
+				},
+				{
+					"name": "Search Order",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{Authorization}}",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/v1/order?invoice=2024&page=1&per_page=2&order_by=asc",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"order"
+							],
+							"query": [
+								{
+									"key": "invoice",
+									"value": "2024"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "per_page",
+									"value": "2"
+								},
+								{
+									"key": "order_by",
+									"value": "asc"
+								}
+							]
+						},
+						"description": "Search orders by given its invoice. Search using infix search. Will be paginated and ordered based on given query params.\n\nAccepted params :\n\n1. invoice - string\n    \n2. page - int\n    \n3. per_page - int\n    \n4. order_by - string\n    \n\nWill return metadata response to see what filters applied to the search."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Order",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{Authorization}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/v1/order/:id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"order",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "15"
+								}
+							]
+						},
+						"description": "Delete existing order."
+					},
+					"response": []
+				}
+			],
+			"description": "API that handles order related features. All API need Authorization to be operated. API List :\n\n1. Create Order\n    \n2. Update Order\n    \n3. Get Order Detail\n    \n4. Search Order\n    \n5. Delete Order"
+		},
+		{
+			"name": "Login API",
+			"item": [
+				{
+					"name": "Get Login Info",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{Authorization}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/login",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"login"
+							]
+						},
+						"description": "Will get login information. Currently information only contain customer_id and username."
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\" : \"superadmin\",\n    \"password\": \"superadmin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/login",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"login"
+							]
+						},
+						"description": "Login API to get token for authorization. Accept body request of username and password. Currently token only active for 1 hour."
+					},
+					"response": []
+				}
+			],
+			"description": "API that handles Login Related Features. List API :\n\n1. Login\n    \n2. Login Info"
+		},
+		{
+			"name": "Product API",
+			"item": [
+				{
+					"name": "Get All Product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/v1/product",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"product"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "To view product stock behavior from order features logic. Currently, product data populated manually in DB."
+		}
+	]
+}
