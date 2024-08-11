@@ -25,6 +25,7 @@ func (h *handler) HandlerGetCustomerByID(g *gin.Context) {
 	id, err := strconv.Atoi(idRaw)
 	if err != nil {
 		h.responseWriter.GinHTTPResponseWriter(g, nil, err, http.StatusBadRequest)
+		return
 	}
 
 	customer, err := h.customer.GetCustomerByID(ctx, id)
@@ -161,16 +162,25 @@ func (h *handler) constructQuerySearch(g *gin.Context) (map[string]interface{}, 
 	var (
 		page    int
 		perPage int
+		err     error
 	)
 	pageString := g.Query("page")
 	if pageString != "" {
-		page, _ = strconv.Atoi(pageString)
+		page, err = strconv.Atoi(pageString)
+		if err != nil {
+			return nil, err
+		}
+
 		query["page"] = page
 	}
 
 	perPageString := g.Query("per_page")
 	if perPageString != "" {
-		perPage, _ = strconv.Atoi(perPageString)
+		perPage, err = strconv.Atoi(perPageString)
+		if err != nil {
+			return nil, err
+		}
+
 		query["per_page"] = perPage
 	}
 

@@ -62,6 +62,7 @@ func (h *HTTPWriter) GinHTTPResponseWriter(ctx *gin.Context, data interface{}, e
 		return
 	}
 
+	ctx.Status(code)
 	ctx.Writer.Write(res)
 }
 
